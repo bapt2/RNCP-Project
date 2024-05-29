@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/signin-login.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='Scripts/validatelogin.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='Scripts/main.js') }}" defer></script>
+
+</head>
+
+<body>
+    <header>
+        <div class="title-nav-connection">
+            <h1>Blind Test</h1>
+
+            <nav>
+                <div>
+                    <a href="{{ url_for('index')}}">Accueil</a>
+                    <a href="{{ url_for('info')}}">Information</a>
+                    <a href="{{ url_for('type')}}">Style de music</a>
+                </div>
+            </nav>
+
+            <section class="sign-in-log-in">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account')}}" id="compte">compte</a>
+                {% else %}
+                    <p>inscription / connection</p>
+                    <div>
+                        <a href="{{ url_for('inscription')}}" id="inscription">inscription</a>
+                        <a href="{{ url_for('connection')}}" id="connection">connection</a>
+                    </div>
+                {% endif %}
+            </section>
+
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </main>
+
+    <footer>
+        @Credit: Touraud Baptiste
+    </footer>
+
+    <div class="popup-connection">
+        <div class="popup">
+            <h2>Connecter vous</h2>
+            <form action="/login" method="POST">
+                <div>
+                    <label for="email-log-in">Votre email</label>
+                    <input type="email" id="email-log-in" name="email" placeholder="nom@domaine.com"
+                        autocomplete="on" required>
+                </div>
+                <div>
+                    <label for="password-log-in">Mot de passe</label>
+                    <input type="password" id="password-log-in" name="password" placeholder="********"
+                        autocomplete="on" required>
+                </div>
+
+                <input type="submit" id="connection-validate" value="Connection">
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

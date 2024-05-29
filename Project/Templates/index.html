@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/index.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='Scripts/index.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='Scripts/main.js') }}" defer></script>
+
+</head>
+
+<body>
+    <header>
+        <div class="title-nav-connection">
+            <h1>Blind Test</h1>
+
+            <nav>
+                <div>
+                    <a href="{{ url_for('info')}}">Information</a>
+                    <a href="{{ url_for('type')}}">Style de music</a>
+                </div>
+            </nav>
+
+            <section class="sign-in-log-in">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account')}}" id="compte">compte</a>
+                {% else %}
+                    <p>inscription / connection</p>
+                    <div>
+                        <a href="{{ url_for('inscription')}}" id="inscription">inscription</a>
+                        <a href="{{ url_for('connection')}}" id="connection">connection</a>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </header>
+
+    <main>
+        {% if current_user.is_authenticated %}
+        <section class="salon">
+            <div>
+                <button id="créer-salon">Créer un salon</button>
+            </div>
+            <div>
+                <button id="rejoindre-salon">Rejoindre un salon</button>
+            </div>
+        </section>
+        {% else %}
+        {% endif %}
+
+    </main>
+
+    <div class="popup-créer-salon">
+        <div class="popup">
+            <h2>Créer un salon</h2>
+            <div>
+                <label for="player-number">Nombre de joueur</label>
+                <input type="number" id="player-number" name="player-number" placeholder="Limite à 10 joueurs">
+            </div>
+
+            <div>
+                <label for="music-number">Nombre de music</label>
+                <input type="number" id="music-number" name="music-number" placeholder="Limite à 20 musics">
+            </div>
+
+            <input type="submit" value="Créer le salon">
+        </div>
+    </div>
+
+    <div class="popup-rejoindre-salon">
+        <div class="popup">
+            <h2>Rejoindre un salon</h2>
+            <div>
+                <label for="join-room">Clé du salon</label>
+                <input type="text" id="join-room" name="join-room">
+            </div>
+            <input type="submit" value="Entrer">
+        </div>
+    </div>
+
+    <footer>
+        @Credit: Touraud Baptiste
+    </footer>
+
+</body>
+
+</html>

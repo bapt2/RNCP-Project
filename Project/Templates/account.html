@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <title>compte</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/account.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='Scripts/main.js') }}" defer></script>
+
+</head>
+
+<body>
+    <header>
+        <div class="title-nav-connection">
+            <h1>Blind Test</h1>
+
+            <nav>
+                <div>
+                    <a href="{{ url_for('index')}}">Accueil</a>
+                    <a href="{{ url_for('info')}}">Information</a>
+                    <a href="{{ url_for('type')}}">Style de music</a>
+                </div>
+            </nav>
+
+            <section class="sign-in-log-in">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('account')}}" id="compte">compte</a>
+                {% else %}
+                <p>inscription / connection</p>
+                <div>
+                    <a href="{{ url_for('inscription')}}" id="inscription">inscription</a>
+                    <a href="{{ url_for('connection')}}" id="connection">connection</a>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="left-section">
+            
+            <h2>Bonjour {{ current_user.username }}</h2>
+            <img src="{{ current_user.profile_picture }}" alt="">
+            <a href="{{ url_for('deconnection')}}" id="deconnection">deconnection</a>
+
+        </section>
+        <section class="right-section">
+            <h3></h3>
+        </section>
+
+    </main>
+
+</body>
+<footer>
+    @Credit: Touraud Baptiste
+</footer>
+
+
+</html>

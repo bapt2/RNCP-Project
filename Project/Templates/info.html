@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <title>Information</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+    <script src="{{ url_for('static', filename='Scripts/main.js') }}" defer></script>
+
+</head>
+
+<body>
+    <header>
+        <div class="title-nav-connection">
+            <h1>Blind Test</h1>
+
+            <nav>
+                <div>
+                    <a href="{{ url_for('index')}}">Accueil</a>
+                    <a href="{{ url_for('type')}}">Style de music</a>
+                </div>
+            </nav>
+
+            <section class="sign-in-log-in">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account')}}" id="compte">compte</a>
+                {% else %}
+                    <p>inscription / connection</p>
+                    <div>
+                        <a href="{{ url_for('inscription')}}" id="inscription">inscription</a>
+                        <a href="{{ url_for('connection')}}" id="connection">connection</a>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </header>
+
+    <main>
+        <h2>Informations Importantes</h2>
+        <p>Pour pouvoir jouer il faut se créer un compte, l'email et le pseudo sont unique donc si un des deux est déjà prit ça ne fonctionnera pas</p>
+        <p>L'email n'est utilisé que pour la création et la connection du compte pour le moment,
+            si vous recevez un mail ayant un quelconque rapport avec ce site et que vous l'ouvrez c'est à vos risque et perils</p>
+    </main>
+
+</body>
+    <footer>
+        @Credit: Touraud Baptiste
+    </footer>
+
+
+</html>

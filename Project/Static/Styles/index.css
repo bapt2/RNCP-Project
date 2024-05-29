@@ -1,0 +1,29 @@
+.salon button{
+    border: none;
+    display: inline-block;
+    background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
+    border-radius: 30px 5px 30px 5px;
+    padding: 14px 20px;
+    font-size: 1.1em;
+}
+
+.popup-rejoindre-salon, .popup-créer-salon{
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0%;
+    background-color: rgba(82, 82, 82, 0.5);
+}
+
+.popup-créer-salon .popup div {
+    display: flex;
+    margin: 10px;
+    justify-content: space-around;
+}
+
+.popup-rejoindre-salon .popup div{
+    display: flex;
+    margin: 50px;
+    justify-content: space-around;
+}

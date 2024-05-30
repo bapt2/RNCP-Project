@@ -14,22 +14,22 @@ def checkSigninForm():
 
     if not checkUsername(name):
         flash('Ce nom d\'utilisateur existe déja veuillez en choisir un autre', 'error')
-        return redirect(url_for('inscription'))
+        return redirect(url_for('signin'))
 
     if not checkEmail(email):
         flash('Cette email existe déja veuillez en choisir un autre', 'error')
-        return redirect(url_for('inscription'))
+        return redirect(url_for('signin'))
     
     if not checkPassword(password):
         flash('Ce mot de passe est trop court', 'error')
-        return redirect(url_for('inscription'))
+        return redirect(url_for('signin'))
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     user = User(username=name, mail=email, password=hashed_password)
             
     db.session.add(user)
     db.session.commit()
-    return redirect(url_for('connection'))
+    return redirect(url_for('login'))
 
 def CheckLoginForm():
     form_info = request.form
@@ -38,7 +38,7 @@ def CheckLoginForm():
     user = User.query.filter_by(mail=email).first()
     if user and bcrypt.check_password_hash(user.password, password):
         login_user(user)
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     else:
         flash('Cette email ou ce mot de passe sont incorrecte', 'error')
         return redirect(url_for('login'))
@@ -61,6 +61,6 @@ def checkEmail(email):
 
 def checkPassword(password):
 
-    if password.length < 8:
+    if len(password) < 8:
         return False
     return True

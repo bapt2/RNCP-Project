@@ -21,7 +21,7 @@
 
             <nav>
                 <div>
-                    <a href="{{ url_for('index')}}">Accueil</a>
+                    <a href="{{ url_for('home')}}">Accueil</a>
                     <a href="{{ url_for('info')}}">Information</a>
                     <a href="{{ url_for('type')}}">Style de music</a>
                 </div>
@@ -33,8 +33,8 @@
                 {% else %}
                     <p>inscription / connection</p>
                     <div>
-                        <a href="{{ url_for('inscription')}}" id="inscription">inscription</a>
-                        <a href="{{ url_for('connection')}}" id="connection">connection</a>
+                        <a href="{{ url_for('signin')}}" id="inscription">inscription</a>
+                        <a href="{{ url_for('login')}}" id="connection">connection</a>
                     </div>
                 {% endif %}
             </section>

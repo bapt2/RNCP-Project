@@ -7,7 +7,7 @@ from flask_login import logout_user, login_required
 
 @app.route('/')
 @app.route('/Accueil', methods=['GET', 'POST'])
-def index():
+def home():
     return render_template('index.html')
 
 
@@ -22,7 +22,7 @@ def type():
 
 
 @app.route('/signin', methods=['GET', 'POST'])
-def inscription():
+def signin():
     if (request.method == 'POST'):
         
         result = checkinformation.checkSigninForm()
@@ -32,7 +32,7 @@ def inscription():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def connection():
+def login():
     if (request.method == 'POST'):
         result = checkinformation.CheckLoginForm()
         if (result):
@@ -41,7 +41,7 @@ def connection():
 
 
 @app.route('/logout')
-def deconnection():
+def logout():
     logout_user()
     return redirect(url_for('index'))
 

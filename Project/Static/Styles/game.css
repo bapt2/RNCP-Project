@@ -1,0 +1,34 @@
+
+.waiting-panel{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border: black solid 2px;
+    margin: 20px 300px;
+    border-radius: 30px;
+}
+
+.game, .winner{
+    display: none;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border: black solid 2px;
+    margin: 20px 300px;
+    border-radius: 30px;
+}
+
+
+#ready{
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
+}
+
+#upload-form{
+    margin: 20px;
+}

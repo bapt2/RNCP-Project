@@ -10,6 +10,7 @@
 * Flask-sqlalchemy
 * Flask_bcrypt
 * Flask-login
+* Flask-socketio
 * Requests
 * Dotenv
 
@@ -24,6 +25,7 @@ Flask: 3.0.3 or highter
 Flask-SQLAlchemy: 3.1.1 or highter
 Flask-Bcrypt: 1.0.1 or highter
 Flask-Login: 0.6.3 or highter
+Flask-SocketIO: 5.3.6 or highter
 python-dotenv: 1.0.1 or highter
 requests: 2.32.2 or highter
 Sqlite3: 3.37.2 or highter
@@ -42,6 +44,7 @@ $ pip install flask
 $ pip install flask-sqlalchemy
 $ pip install flask_bcrypt
 $ pip install flask-login
+$ pip install flask-socketio
 $ pip install python-dotenv
 $ pip install requests
 ```

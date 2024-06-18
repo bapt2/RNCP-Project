@@ -1,9 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask import Flask
-from dotenv import load_dotenv
 from flask_socketio import SocketIO
+from flask_bcrypt import Bcrypt
+from dotenv import load_dotenv
+from flask import Flask
 import os
 
 load_dotenv()
@@ -28,7 +28,7 @@ socketio = SocketIO(app)
 socketio.init_app(app)
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'connection'
+login_manager.login_view = 'login'
 
 from Project.models import User
 with app.app_context():

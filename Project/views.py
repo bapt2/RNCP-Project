@@ -63,7 +63,7 @@ def game():
     return checkinformation.room()
 
 @app.route('/upload-audio', methods=['POST'])
-def upload_audio():
+def uploadAudio():
     return checkinformation.audio()
 
 @app.route('/uploads/<filename>')

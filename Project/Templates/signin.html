@@ -44,11 +44,11 @@
     </header>
 
     <main>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+        {% with players = get_flashed_messages(with_categories=true) %}
+            {% if players %}
                 <ul>
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
+                    {% for category, player in players %}
+                        <li class="{{ category }}">{{ player }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -62,7 +62,7 @@
     <div class="popup-inscription">
         <div class="popup">
             <h2>Créer votre compte</h2>
-            <form action="/signin" method="POST">
+            <form action="{{ url_for('signin')}}" method="POST">
                 <div>
                     <label for="pseudo">Votre pseudo</label>
                     <input type="text" id="pseudo" name="pseudo" placeholder="pseudo"

@@ -27,8 +27,8 @@ Flask-Bcrypt: 1.0.1 or highter
 Flask-Login: 0.6.3 or highter
 Flask-SocketIO: 5.3.6 or highter
 python-dotenv: 1.0.1 or highter
-requests: 2.32.2 or highter
 Sqlite3: 3.37.2 or highter
+pytest: 8.2.2 or highter
 ```
 
 ## Virtual Environment
@@ -46,7 +46,7 @@ $ pip install flask_bcrypt
 $ pip install flask-login
 $ pip install flask-socketio
 $ pip install python-dotenv
-$ pip install requests
+$ pip install pytest
 ```
 
 #### Sqlite3
@@ -59,7 +59,13 @@ sudo apt install sqlite3
 ```
 
 ## Start the server
-this command bellow will create the app and initialise the database or create one if doesn't existe
+This command bellow will create the app and initialise the database or create one if doesn't existe
 ```
 $ python3 run.py
+```
+
+## start the test
+Use the command bellow to start the tests
+```
+$ pytest
 ```

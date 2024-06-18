@@ -30,7 +30,7 @@ nav {
 }
 
 main div {
-    display:  flex;
+    display: flex;
     justify-content: center;
     padding: 20px;
     margin: 20px;
@@ -46,14 +46,20 @@ nav a {
     padding-left: 30px;
     font-size: 18px;
 }
+.mobile-navbar, .dropdown-navbar button{
+    display: none;
+    background: none;
+    border: none;
+}
 
 button:hover {
     opacity: 75%;
     cursor: pointer;
 }
 
-#inscription:focus ,#connection:focus {
-    border: rgb(0, 15, 61) solid  2px;
+#inscription:focus,
+#connection:focus {
+    border: rgb(0, 15, 61) solid 2px;
     padding: 7px 13px;
 }
 
@@ -70,7 +76,7 @@ footer {
 
 }
 
-label{
+label {
     display: inline;
 }
 
@@ -99,7 +105,7 @@ label{
 
 /* Popup Section */
 
-.popup{
+.popup {
     position: absolute;
     top: 40%;
     left: 50%;
@@ -116,35 +122,50 @@ label{
 
 }
 
-.popup div{
-padding: 20px;
+.popup div {
+    padding: 20px;
 }
 
-.popup input{
+.popup input {
     padding: 7px;
     border: none;
     border-radius: 5px;
 }
 
-.popup input::placeholder{
+.popup input::placeholder {
     font-size: 1.2em;
 }
 
-.popup input[type='submit']{
+.popup input[type='submit'] {
     margin: 20px;
     font-size: 1em;
 }
 
-.popup input[type='submit']:hover{
+.popup input[type='submit']:hover {
     cursor: pointer;
     opacity: 75%;
 }
 
-.popup input[type='submit']:focus{
-    border: rgb(0, 15, 61) solid  2px;
+.popup input[type='submit']:focus {
+    border: rgb(0, 15, 61) solid 2px;
     padding: 6px 9px;
 }
 
-.active{
+.active {
     display: flex !important;
+}
+
+@media screen and (max-width: 996px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .dropdown-navbar button{
+        display: flex;
+        width: 10%;
+        height: 10%;
+    }
+    .navbar{
+        display: none;
+    }
 }

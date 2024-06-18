@@ -253,15 +253,11 @@ def audio():
     return jsonify({"message": "files successfully uploaded", "files": saved_file}), 200
 
 def nextMusic(room):
-    name = session.get("name")
     if room in rooms:
         current_index = rooms[room]["currentMusicIndex"]
-        print(current_index)
         if current_index >= len(rooms[room]["musics"]):
-            print(rooms[room]["points"])
             sortedPoints = dict(sorted(rooms[room]["points"].items(), key=lambda item: item[1], reverse=True))
             rooms[room]["points"] = sortedPoints
-            print(rooms[room]["points"])
             socketio.emit("winner", rooms[room]["points"], room=room)    
             return
         
@@ -269,10 +265,6 @@ def nextMusic(room):
         
         rooms[room]["responseList"] = []
         rooms[room]["gameMaster"] = rooms[room]["musics"][current_index]["player"]
-        gamemaster = rooms[room]["gameMaster"]
-        playerList = rooms[room]["players"]
-        print(f"current gameMaster: {gamemaster}")
-        print(f"current playerList: {playerList}")
 
         for player in rooms[room]["players"]:
             emit("current_music", {

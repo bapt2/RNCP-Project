@@ -7,7 +7,7 @@ function validatesignin() {
 
     nom.addEventListener("keyup", () => {
         if (!validerNom(nom.value)) {
-            nom.setCustomValidity("nom invalide, doit fair 2 character minimum")
+            nom.setCustomValidity("nom invalide, doit avoir 2 character au minimum")
         }
         else {
             nom.setCustomValidity("")
@@ -32,11 +32,6 @@ function validatesignin() {
         }
     })
     
-    btnSignin.addEventListener("submit", (event) => {
-        event.defaultPrevented()
-        validerNom(nom.value)
-        validerEmail(email.value)
-    })
 }
 
 

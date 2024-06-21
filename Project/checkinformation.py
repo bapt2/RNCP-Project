@@ -12,7 +12,7 @@ import random, os
 rooms = {}
 sockets = defaultdict(dict)
 
-def generate_unique_code(length):
+def generateUniqueCode(length):
     while True:
         code =  ""
         for _ in range(length):
@@ -113,7 +113,7 @@ def checkRoomCreationForm():
             flash('Le nombre de music ne peut être inferieur à 1 ou supérieur à 20', 'error')
             return redirect(url_for('home'))
             
-        room = generate_unique_code(12)
+        room = generateUniqueCode(12)
         rooms[room] = {
             "members": 0,
             "musicsNumber": 0,

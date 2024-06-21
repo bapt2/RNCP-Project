@@ -160,6 +160,16 @@ label {
         font-size: 2em;
     }
 
+    .sign-in-log-in div{
+        display: flex;
+        justify-content: center;
+    }
+
+    .sign-in-log-in a{
+        padding: 4px 7px;
+        font-size: 0.8em;
+    }
+
     .dropdown-navbar button{
         display: flex;
         width: 10%;

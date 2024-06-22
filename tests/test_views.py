@@ -6,6 +6,7 @@ import os
 
 app.test_client_class = FlaskLoginClient
 
+
 @pytest.fixture
 def client():
     with app.test_client() as client:
@@ -18,6 +19,7 @@ def test_Home(client):
     assert response.status_code == 200
     response = client.get('/Accueil')
     assert response.status_code == 200
+
 
 def test_Info(client):
     response = client.get('/Information')
@@ -47,8 +49,9 @@ def test_Logout(client):
     assert response.status_code == 200
 
 
-def test_Account(client): 
-    response = client.post('Connexion', json={'username': 'testuser'}, follow_redirects=True)
+def test_Account(client):
+    response = client.post('Connexion', json={'username': 'testuser'},
+                           follow_redirects=True)
     assert response.status_code == 200
 
     response = client.get('/Compte', follow_redirects=True)

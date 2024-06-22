@@ -16,8 +16,6 @@ def client():
             yield client
 
 
-
-
 def test_Signin_Form_Invalide(client, monkeypatch):
     form_data = {
         'pseudo': 'exist_username',
@@ -27,23 +25,28 @@ def test_Signin_Form_Invalide(client, monkeypatch):
 
     def mock_CheckUsername(username):
         return False
-    
+
     def mock_CheckEmail(email):
         return False
-    
+
     def mock_Password(password):
         return False
-    
-    monkeypatch.setattr('Project.checkinformation.checkUsername', mock_CheckUsername)
-    monkeypatch.setattr('Project.checkinformation.checkEmail', mock_CheckEmail)
-    monkeypatch.setattr('Project.checkinformation.checkPassword',mock_Password)
+
+    monkeypatch.setattr('Project.checkinformation.checkUsername',
+                        mock_CheckUsername)
+    monkeypatch.setattr('Project.checkinformation.checkEmail',
+                        mock_CheckEmail)
+    monkeypatch.setattr('Project.checkinformation.checkPassword',
+                        mock_Password)
     with client.session_transaction() as sess:
         sess['username'] = 'testuser'
 
     response = client.post('/Inscription', data=form_data)
-    assert response.status_code == 302,(
-        'Ce nom d\'utilisateur existe déja veuillez en choisir un autre' in response.data.decode('utf-8'),
-     'Ce email existe déja veuillez en choisir un autre' in response.data.decode('utf-8') )
+    assert response.status_code == 302, (
+        'Ce nom d\'utilisateur existe déja veuillez en choisir un autre'
+        in response.data.decode('utf-8'),
+        'Ce email existe déja veuillez en choisir un autre'
+        in response.data.decode('utf-8'))
 
     with client.session_transaction() as sess:
         sess.clear()
@@ -58,23 +61,26 @@ def test_Signin_Form_Valide(client, monkeypatch):
 
     def mock_CheckUsername(username):
         return True
-    
+
     def mock_CheckEmail(email):
         return True
-    
+
     def mock_Password(password):
         return True
-    
-    monkeypatch.setattr('Project.checkinformation.checkUsername', mock_CheckUsername)
-    monkeypatch.setattr('Project.checkinformation.checkEmail', mock_CheckEmail)
-    monkeypatch.setattr('Project.checkinformation.checkPassword',mock_Password)
+
+    monkeypatch.setattr('Project.checkinformation.checkUsername',
+                        mock_CheckUsername)
+    monkeypatch.setattr('Project.checkinformation.checkEmail',
+                        mock_CheckEmail)
+    monkeypatch.setattr('Project.checkinformation.checkPassword',
+                        mock_Password)
 
     with client.session_transaction() as sess:
         sess['username'] = 'testuser'
 
-    response = client.post('/Inscription', data=form_data, follow_redirects=True)
+    response = client.post('/Inscription', data=form_data,
+                           follow_redirects=True)
     assert response.status_code == 200
 
     with client.session_transaction() as sess:
         sess.clear()
-

@@ -24,7 +24,7 @@
                 <div>
                     <a href="{{ url_for('home')}}">Accueil</a>
                     <a href="{{ url_for('info')}}">Information</a>
-                    <a href="{{ url_for('type')}}">Style de music</a>
+                    <a href="{{ url_for('type')}}">Style de musique</a>
                 </div>
             </nav>
 
@@ -32,10 +32,10 @@
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('account')}}" id="compte">compte</a>
                 {% else %}
-                    <p>inscription / connection</p>
+                    <p>inscription / connexion</p>
                     <div>
                         <a href="{{ url_for('signin')}}" id="inscription">inscription</a>
-                        <a href="{{ url_for('login')}}" id="connection">connection</a>
+                        <a href="{{ url_for('login')}}" id="connection">connexion</a>
                     </div>
                 {% endif %}
             </section>

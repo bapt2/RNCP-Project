@@ -14,7 +14,7 @@ ALLOWED_EXTENSION = {'mp3', 'wav', 'ogg'}
 app = Flask(__name__)
 app.config["DEBUG"] = True
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -35,4 +35,3 @@ with app.app_context():
     db.create_all()
 # ne pas supprimer permet l'accès au routes
 from Project import views
-

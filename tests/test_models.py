@@ -15,12 +15,15 @@ def test_Client():
 
     ctx.pop()
 
+
 @pytest.fixture(scope='module')
 def initDataBase(test_Client):
     db.create_all()
 
-    user1 = User(username='testuser1', mail='test1@exemple.com', password='password1')
-    user2 = User(username='testuser2', mail='test2@exemple.com', password='password2')
+    user1 = User(username='testuser1', mail='test1@exemple.com',
+                 password='password1')
+    user2 = User(username='testuser2', mail='test2@exemple.com',
+                 password='password2')
     db.session.add(user1)
     db.session.add(user2)
 
@@ -43,8 +46,11 @@ def test_User_Model(initDataBase):
     assert user.password == 'password1'
     assert user.profile_picture == 'default.jpg'
 
+
 def test_User_Creation(initDataBase):
-    new_user = User(username='newuser', mail='newuser@exemple.com', password='newpassword')
+    new_user = User(username='newuser',
+                    mail='newuser@exemple.com',
+                    password='newpassword')
     db.session.add(new_user)
     db.session.commit()
 
@@ -60,15 +66,18 @@ def test_User_Creation(initDataBase):
 
     db.session.commit()
 
+
 def test_User_Id_Unique(initDataBase):
     user1 = User.query.filter_by(username='testuser1').first()
     user2 = User.query.filter_by(username='testuser2').first()
     assert user1.id != user2.id
 
+
 def test_User_Username_Unique(initDataBase):
     user1 = User.query.filter_by(username='testuser1').first()
     user2 = User.query.filter_by(username='testuser2').first()
     assert user1.username != user2.username
+
 
 def test_User_Mail_Unique(initDataBase):
     user1 = User.query.filter_by(mail='test1@exemple.com').first()

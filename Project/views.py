@@ -1,14 +1,17 @@
-from flask import render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask import (
+    render_template, request, redirect, url_for,
+    send_from_directory, jsonify)
 from flask_login import logout_user, login_required
 from Project import checkinformation
 from Project.models import User
 from Project import app
 import os
 
+
 @app.route('/')
 @app.route('/Accueil', methods=['GET', 'POST'])
 def home():
-    if (request.method == 'POST'):   
+    if (request.method == 'POST'):
         result = checkinformation.checkRoomCreationForm()
         if (result):
             return result
@@ -28,7 +31,7 @@ def type():
 @app.route('/Inscription', methods=['GET', 'POST'])
 def signin():
     if (request.method == 'POST'):
-        
+
         result = checkinformation.checkSigninForm()
         if (result):
             return result
@@ -50,7 +53,6 @@ def logout():
     return redirect(url_for('home'))
 
 
-
 @app.route('/Compte')
 @login_required
 def account():
@@ -62,9 +64,11 @@ def account():
 def game():
     return checkinformation.room()
 
+
 @app.route('/upload-audio', methods=['POST'])
 def uploadAudio():
     return checkinformation.audio()
+
 
 @app.route('/uploads/<filename>')
 def uploadedFile(filename):
@@ -73,4 +77,3 @@ def uploadedFile(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     else:
         return jsonify({"error": "file not found"}), 404
-    

@@ -1,11 +1,11 @@
-from Project import checkinformation
-from Project import app
+from Project import checkinformation, app, db
+from Project.models import User
 import pytest
 import os
 
 
 def test_Generate_Unique_Code():
-    code = checkinformation.generate_unique_code(12)
+    code = checkinformation.generateUniqueCode(12)
     assert len(code) == 12
 
 
@@ -13,13 +13,14 @@ def test_Generate_Unique_Code():
 def client():
     with app.test_client() as client:
         with app.app_context():
+            db.create_all()
             yield client
 
 
 def test_Signin_Form_Invalide(client, monkeypatch):
     form_data = {
         'pseudo': 'exist_username',
-        'email': 'exist@test.com',
+        'mail': 'exist@test.com',
         'password': 'existpassword'
     }
 
@@ -54,8 +55,8 @@ def test_Signin_Form_Invalide(client, monkeypatch):
 
 def test_Signin_Form_Valide(client, monkeypatch):
     form_data = {
-        'pseudo': 'newusername',
-        'email': 'newemail@test.com',
+        'pseudo': 'anotherusername',
+        'email': 'another@test.com',
         'password': 'newpassword'
     }
 
@@ -84,3 +85,7 @@ def test_Signin_Form_Valide(client, monkeypatch):
 
     with client.session_transaction() as sess:
         sess.clear()
+
+    user = User.query.filter_by(username='anotherusername').first()
+    db.session.delete(user)
+    db.session.commit()

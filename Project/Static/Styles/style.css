@@ -2,6 +2,24 @@
     margin: 0;
 }
 
+body.night-mode{
+    background-color: #121212;
+    color: white;
+}
+
+body.night-mode a{
+    color: white;
+}
+
+body.night-mode .title-nav-connection{
+    border-bottom: solid rgb(185, 185, 185) 5px;
+}
+
+body.night-mode .dropdown-navbar path,
+body.night-mode .dropup-navbar path{
+    fill: #ffffff;
+}
+
 body {
     font-family: "Manrope", sans-serif;
     font-size: 1em;
@@ -46,7 +64,15 @@ nav a {
     padding-left: 30px;
     font-size: 18px;
 }
-.mobile-navbar, .dropdown-navbar button{
+
+.dropup-navbar button {
+    display: none;
+    background: none;
+    border: none;
+}
+
+.mobile-navbar,
+.dropdown-navbar button {
     display: none;
     background: none;
     border: none;
@@ -64,7 +90,7 @@ button:hover {
 }
 
 footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     display: flex;
     justify-content: center;
@@ -73,7 +99,6 @@ footer {
     font-weight: 600;
     font-size: 17px;
     background-color: grey;
-
 }
 
 label {
@@ -101,6 +126,10 @@ label {
     background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
     border-radius: 30px 5px 30px 5px;
     padding: 9px 15px;
+}
+
+.sign-in-log-in #compte{
+    margin-top: 12px;
 }
 
 /* Popup Section */
@@ -155,27 +184,123 @@ label {
     display: flex !important;
 }
 
+/* error */
+
+.ul-Error{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 650px;
+    padding: 20px 0px;
+    background-color: rgb(221, 124, 124);
+    color: rgb(83, 0, 0);
+    border: rgb(124, 0, 0) solid 2px;
+}
+
+.ul-Error li{
+    padding: 0px 20px;
+    margin: 0px 20px;
+}
+
 @media screen and (max-width: 996px) {
+
     h1 {
         font-size: 2em;
-    }
-
-    .sign-in-log-in div{
         display: flex;
-        justify-content: center;
+    }
+    
+    .title-nav-connection{
+        padding-bottom: 60px;
     }
 
-    .sign-in-log-in a{
+    .title-nav-connection h1{
+        position: fixed;
+        left: 1%;
+        top: 1%;
+    }
+
+    .sign-in-log-in {
+        position: fixed;
+        right: 1%;
+        top: 0.5%;
+        padding: 0px;
+    }
+
+    .sign-in-log-in a {
         padding: 4px 7px;
         font-size: 0.8em;
     }
+    
+    .sign-in-log-in #compte a {
+        position: absolute;
+        right: 1%;
+        top: 1%;
+    }
 
     .dropdown-navbar button{
+        position: absolute;
+        right: 47%;
+        top: 1%;
         display: flex;
-        width: 10%;
-        height: 10%;
+        padding-bottom: 20px;
     }
+    
     .navbar{
+        position: absolute;
+        right: 45%;
+        display: flex;
+    }
+
+    .dropup-navbar button{
+        position: absolute;
+        right: 47%;
+        top: 7%;
+        display: flex;
+    }
+
+
+    .navbar {
         display: none;
+    }
+
+    .mobile-navbar a,
+    .dropup-navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0px;
+        margin: 10px;
+    }
+
+    .mobile-navbar{
+        margin: 0px 70px;
+    }
+
+    .mobile-link{
+        position: absolute;
+        right: 43%;
+    }
+
+    .dropup-navbar img {
+        transform: rotate(180deg);
+    }
+    
+    .signin-login-error,
+    .create-join-room-error{
+        margin: 0 auto;
+        padding: 50px;
+        max-width: 100%;
+    }
+
+    .signin-login-error ul,
+    .create-join-room-error ul{
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .signin-login-error li,
+    .create-join-room-error li{
+        padding: 10px;
+        margin-left: 40px;
     }
 }

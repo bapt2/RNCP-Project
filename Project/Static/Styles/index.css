@@ -1,3 +1,7 @@
+body.night-mode button{
+    color: white;
+}
+
 .salon button{
     border: none;
     display: inline-block;

@@ -1,6 +1,14 @@
+h2{
+    text-align: center;
+}
 
-.waiting-panel{
-    display: flex;
+body.night-mode .waiting-panel,
+body.night-mode .game,
+body.night-mode .winner{
+    border: solid rgb(185, 185, 185) 2px;
+}
+
+.waiting-panel, .game, .winner{
     flex-direction: column;
     align-content: center;
     justify-content: center;
@@ -8,19 +16,15 @@
     border: black solid 2px;
     margin: 20px 300px;
     border-radius: 30px;
+}
+
+.waiting-panel{
+    display: flex;
 }
 
 .game, .winner{
     display: none;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    border: black solid 2px;
-    margin: 20px 300px;
-    border-radius: 30px;
 }
-
 
 #ready{
     font-size: 1em;
@@ -31,4 +35,22 @@
 
 #upload-form{
     margin: 20px;
+}
+
+@media screen and (max-width: 996px) {
+    .waiting-panel{
+        padding: 20px 150px;
+    }
+
+    .dropup-navbar button{
+        position: absolute;
+        right: 47%;
+        top: 10%;
+        display: flex;
+    }
+
+    .mobile-link{
+        position: absolute;
+        right: 42%;
+    }
 }

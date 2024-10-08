@@ -92,20 +92,3 @@ initAddEventListenerPopupCreationSalon()
 initAddEventListenerPopupRejoindreSalon()
 
 
-function mobileNavbarDisplay(){
-    navbarBtn = document.getElementById("navbar-button")
-    isOpen = false
-    navbarBtn.addEventListener("click", () =>{
-        mobileNavbar = document.querySelector(".mobile-navbar")
-        if (!isOpen){
-            mobileNavbar.style.display = 'block'
-
-            isOpen = true
-        } else{
-            mobileNavbar.style.display = 'none'
-            isOpen = true
-        }
-    })
-}
-
-mobileNavbarDisplay()

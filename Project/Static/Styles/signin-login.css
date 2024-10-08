@@ -1,19 +1,19 @@
-ul{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 650px;
-    padding: 20px 0px;
-    background-color: rgb(221, 124, 124);
-    color: rgb(83, 0, 0);
-    border: rgb(124, 0, 0) solid 2px;
-}
 
-li{
-    padding: 0px 20px;
-    margin: 0px 20px;
-}
 
 .popup-inscription .popup{
     padding: 10px;
+}
+@media screen and (max-width: 996px) {
+
+    .dropup-navbar button{
+        position: absolute;
+        right: 47%;
+        top: 10%;
+        display: flex;
+    }
+
+    .mobile-link{
+        position: absolute;
+        right: 42%;
+    }
 }

@@ -1,20 +1,114 @@
 
-.left-section{
-    border-right: black solid 2px;
-    margin-right: 1375px;
-    height: 100%;
-}
-
 h2{
     padding: 20px; 
 }
+
+body.night-mode .left-section{
+    border-right: solid rgb(185, 185, 185) 2px;
+}
+.main-part{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.left-section{
+    flex: 0 0 27.5%;
+    border-right: black solid 2px;
+    top: 6.5%;
+    height: 90vh;
+}
+
 .left-section img{
     border-radius: 30px;
 }
+
 .left-section a{
     margin: 20px;
     border: none;
     background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
     border-radius: 30px 5px 30px 5px;
     padding: 9px 15px;
+}
+
+.user-info{
+    flex: 1;
+    margin-left: 0%;
+    padding-top: 0%;
+    padding-bottom: 20px;
+    flex-direction: column;
+}
+
+.game-played{
+    display: block;
+}
+
+.game-win{
+    display: block;
+}
+
+.switch{
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-left: 39px;
+}
+
+.switch-p {
+    margin: 10px 0px;
+    padding-left: 0px;
+}
+
+.switch input{
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider{
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+
+}
+
+.slider:before{
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider{
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before{
+    transform: translateX(26px);
+}
+
+@media screen and (max-width: 996px) {
+
+    .dropup-navbar button{
+        position: absolute;
+        right: 47%;
+        top: 10%;
+        display: flex;
+    }
+
+    .mobile-link{
+        position: absolute;
+        right: 42%;
+    }
 }

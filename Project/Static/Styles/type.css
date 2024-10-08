@@ -1,0 +1,8 @@
+@media screen and (max-width: 996px) {
+
+
+    .mobile-link{
+        position: absolute;
+        right: 44%;
+    }
+}

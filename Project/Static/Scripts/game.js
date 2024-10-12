@@ -44,7 +44,7 @@ socket.on("current_music", data => {
     const currentMusicPlayer = data.player
     const currentMusicUrl = data.preview_url
     const currentPlayer = sessionStorage.getItem("username")
-
+    console.log(`la preview url est: ${currentMusicUrl}`)
     if (currentMusicPlayer === currentPlayer) {
         document.getElementById("action").innerHTML = "Vous allez évaluer les réponses"
     }
@@ -94,7 +94,7 @@ socket.on("current_music", data => {
     }
 
     audioPlayer.onerror = () => {
-        console.error("Failed to load audio file")
+        console.error("Failed to load sotify preview")
         isPlaying = false
     }
 })
@@ -104,7 +104,6 @@ socket.on("evaluation_response", data => {
     const responseList = document.getElementById("player-awnser")
     responseList.innerHTML = ""
     data.forEach(responsedata => {
-        console.log(responsedata)
         const li = document.createElement("li")
         li.innerHTML = responsedata.name + ': ' + responsedata.response
         responseList.appendChild(li)
@@ -117,21 +116,20 @@ socket.on("evaluation_response", data => {
             socket.emit("add_point", responsedata.name)
             responseList.innerHTML = ""
         })
-        const skipBtn = document.createElement("button")
-        skipBtn.id = "skip-button"
-        skipBtn.innerHTML = 'Aucune bonne réponse'
-        skipBtn.style.display = 'none'
-        skipBtn.addEventListener("click", () =>{
-            socket.emit("next_music")
-        })
     })
-
-    const responseBtn = responseList.querySelectorAll('button')
-    const skipBtn = document.getElementById("skip-button")
-    responseBtn.forEach(button => {
+    const responsesBtn = responseList.querySelectorAll("button")
+    responsesBtn.forEach(button => {
         button.style.display = 'inline-block'
     })
-    skipBtn.style.display = 'inline-block'
+    
+    const skipBtn = document.createElement("button")
+    skipBtn.innerHTML = 'Aucune bonne réponse'
+    gameMaster = document.getElementById("skip-button")
+    gameMaster.appendChild(skipBtn)
+    skipBtn.style.display = 'block'
+    skipBtn.addEventListener("click", () => {
+        socket.emit("next_music")
+    })
 })
 
 
@@ -156,52 +154,48 @@ readybtn.addEventListener("click", () => {
     }
     socket.emit("player_ready", { ready: isready })
 })
-
-// const uploadForm = document.getElementById("upload-form");
-// const audioFileInput = document.getElementById("audio-file");
-
-// uploadForm.addEventListener("submit", (event) => {
-//     event.preventDefault()
-
-//     const files = audioFileInput.files;
-//     if (files.length == 0) {
-//         alert("veuillez envoyer au moins un fichier audio")
-//         return
-//     }
-
-//     const formData = new FormData()
-//     for (const file of files) {
-//         formData.append("audioFiles", file)
-//     }
-//     fetch("/upload-audio", {
-//         method: "POST",
-//         body: formData,
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log("Fichiers audio téléchargés avec succès: ", data)
-//         })
-//         .catch(error => {
-//             console.error("Erreur lors du chargement des fichiers audio: ", error)
-//         })
-// })
-
-socket.on("winner", data => {
+// -----------------------------------------------------------------------------------------------------------------
+socket.on("end-game", data => {
     gamePanel = document.querySelector(".game")
     winnerPanel = document.querySelector(".winner")
     gamePanel.style.display = 'none'
     winnerPanel.style.display = 'flex'
 
-    const [winner, winerPoints] = Object.entries(data)[0]
-    h2 = document.getElementById("winner-text")
-    h2.innerHTML = `Le gagnant est: ${winner} avec ${winerPoints} points`
+    if (data && Object.keys(data).length > 0){
+        const [winner, winerPoints] = Object.entries(data)[0]
+        h2 = document.getElementById("winner-text")
+        h2.innerHTML = `Le gagnant est: ${winner} avec ${winerPoints} points`
+    
+        const ranking = document.getElementById("ranking")
+        ranking.innerHTML = ""
+        for (const [player, point] of Object.entries(data)) {
+            const li = document.createElement("li")
+            li.innerHTML = `${player}: ${point} points`
+            ranking.appendChild(li)
+        }
 
-    const ranking = document.getElementById("ranking")
-    ranking.innerHTML = ""
-    for (const [player, point] of Object.entries(data)) {
-        const li = document.createElement("li")
-        li.innerHTML = `${player}: ${point} points`
-        ranking.appendChild(li)
+        const home = document.createElement("button")
+        home.innerHTML = "Retour à la page d'accueil"
+        gameMaster = document.getElementById("end-button")
+        gameMaster.appendChild(home)
+        home.style.display = 'block'
+        home.addEventListener("click", () => {
+            window.location.href = '/'
+        })
+
+    }
+    else{
+        h2 = document.getElementById("winner-text")
+        h2.innerHTML = "Personne n'a obtenu de point, il n'y a donc aucun vainqueur"
+
+        const home = document.createElement("button")
+        home.innerHTML = "Retour à la page d'accueil"
+        gameMaster = document.getElementById("end-button")
+        gameMaster.appendChild(home)
+        home.style.display = 'block'
+        home.addEventListener("click", () => {
+            window.location.href = '/'
+        })
     }
 })
 
@@ -210,22 +204,9 @@ document.getElementById("search-button").addEventListener("click", (e) => {
     e.preventDefault()
 
     const query = document.getElementById("search-input").value
-    const accessToken = sessionStorage.getItem('spotify_access_token')
 
-    if (!accessToken) {
-        console.error("Aucun access token touver.")
-        alert('Veuillez vous connecter à spotify pour rechercher des musiques')
-        return
-    }
-
-    console.log(`Access token: ${accessToken}`);
-
-    fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track`, {
+    fetch(`/search_music?query=${encodeURIComponent(query)}`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('spotify_access_token')}`,
-            'Content-Type': 'application/json'
-        }
     })
         .then(response => {
             if (!response.ok) {
@@ -260,12 +241,12 @@ function displayResults(tracks) {
                                     <button data-track-id="${track.id}" class="select-track-button">Sélectionnez </button>
                                 `
         resultsDiv.appendChild(trackElement)
-        
+
     })
-    
+
     selecttrackbuttons = document.querySelectorAll(".select-track-button")
-    selecttrackbuttons.forEach(button =>{
-        button.addEventListener("click", (e) =>{
+    selecttrackbuttons.forEach(button => {
+        button.addEventListener("click", (e) => {
             e.preventDefault()
             trackId = e.target.getAttribute('data-track-id')
             selectTrack(trackId)
@@ -283,43 +264,21 @@ function selectTrack(trackId) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ trackId: trackId , username: username})
+        body: JSON.stringify({ trackId: trackId, username: username })
     }).then(response => response.json())
-    .then(data =>{
-        const resultsDiv = document.getElementById('results')
-        if (data.success) {
-            console.log("track selected successfully")
-            resultsDiv.innerHTML = ''
-        } else if (data.message){
-            alert(data.message)
-            resultsDiv.innerHTML = ''
-        }
-        else {
-            console.error("failed to selecte track")
-        }
-    })
-    .catch(error => console.error('Error:', error))
-}
-
-
-window.onload = function () {
-    let accessToken = sessionStorage.getItem('spotify_access_token')
-
-    if (!accessToken) {
-        console.log("Token non trouver dans le session storage")
-        fetch('get_token', {
-            method: 'GET'
-        }).then(response => response.json())
-            .then(data => {
-                if (data.token) {
-                    accessToken = data.token
-                    sessionStorage.setItem('spotify_access_token', accessToken)
-                } else {
-                    console.error('aucun token trouvé côté serveur')
-                }
-            })
-            .catch(error => {
-                console.error('erreur dans la récuperation du token depuis le backend:', error)
-            })
-    }
+        .then(data => {
+            const resultsDiv = document.getElementById('results')
+            if (data.success) {
+                console.log(`le trackId est: ${trackId}`)
+                console.log("track selected successfully")
+                resultsDiv.innerHTML = ''
+            } else if (data.message) {
+                alert(data.message)
+                resultsDiv.innerHTML = ''
+            }
+            else {
+                console.error("failed to selecte track")
+            }
+        })
+        .catch(error => console.error('Error:', error))
 }

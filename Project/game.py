@@ -2,15 +2,13 @@ from flask import (
     request, redirect, session, render_template,
     url_for, flash, jsonify)
 from flask_socketio import join_room, leave_room, send, emit
-from Project import views, socketio, db, bcrypt, client_id
-from flask_login import login_user, current_user
-from werkzeug.utils import secure_filename
+from Project import views, socketio, db, client_id, client_secret
 from Project.models import User, UserInfo
+from flask_login import current_user
 from collections import defaultdict
 from string import ascii_uppercase
-import requests
-import random
-import os
+import time, random, requests
+from base64 import b64encode
 
 
 # --------------------------------------- initial system begenning --------------------------------
@@ -43,6 +41,7 @@ def checkRoomCreationForm():
 
     room = code
 
+
     if create is not False:
         if player_number == "" or music_number == "":
             flash('Il faut remplir ces deux cases', 'error')
@@ -71,7 +70,8 @@ def checkRoomCreationForm():
             "players": [],
             "musics": [],
             "responseList": [],
-            "ready": {}
+            "ready": {},
+            "points": {}
             }
 
     elif code not in rooms:
@@ -82,11 +82,11 @@ def checkRoomCreationForm():
     session["room"] = room
     session["name"] = current_user.username
 
-    print(f"token: {session.get('spotify_access_token')} check information")
-    if not session.get('spotify_access_token'):
-        return redirect(f"https://accounts.spotify.com/authorize?client_id={client_id}&response_type=token&redirect_uri=http://127.0.0.1:5000/spotify_callback&scope=user-modify-playback-state%20user-read-playback-state%20user-library-read")
+    print(f"token: {session.get('access_token')} check information")
+    if not session.get('access_token'):
+        return redirect(f"https://accounts.spotify.com/authorize?client_id={client_id}&response_type=code&redirect_uri=http://127.0.0.1:5000/spotify_callback&scope=user-modify-playback-state%20user-read-playback-state%20user-library-read")
 
-    return redirect(url_for('spotify_callback'))
+    return redirect(url_for('game'))
 
 
 def room():
@@ -133,7 +133,6 @@ def disconnect():
     if room not in rooms:
         return
     
-    leave_room(room)
 
     rooms[room]["musics"] = [
         music for music in rooms[room]["musics"]
@@ -151,7 +150,7 @@ def disconnect():
 
     if rooms[room]["members"] <= 0:
         del rooms[room]
-    print(f"{rooms[room]['players']} s'est déconnecter")
+    leave_room(room)
     send({
         'players': rooms[room]['players'],
         'ready': rooms[room]["ready"]}, room=room)
@@ -190,30 +189,38 @@ def nextMusic(room, access_token):
     if room in rooms:
         current_index = rooms[room]["currentMusicIndex"]
         if current_index >= len(rooms[room]["musics"]):
-            sortedPoints = dict(sorted(rooms[room]["points"].items(),
-                                       key=lambda item: item[1], reverse=True))
-            rooms[room]["points"] = sortedPoints
+            print(len(rooms[room]["musics"]))
+            if rooms[room]["points"] is not None:
+                sortedPoints = dict(sorted(rooms[room]["points"].items(),
+                                        key=lambda item: item[1], reverse=True))
+                rooms[room]["points"] = sortedPoints
 
-            for player in sortedPoints:
-                username = User.query.filter_by(username=player).first()
-                username.userinfo.number_game_win += 1
-                db.session.commit()
+                for player in sortedPoints:
+                    username = User.query.filter_by(username=player).first()
+                    username.userinfo.number_game_win += 1
+                    db.session.commit()
 
-            socketio.emit("winner", rooms[room]["points"], room=room)
-            return
+                socketio.emit("end-game", rooms[room]["points"], room=room)
+                return
+            elif rooms[room]["points"] is None:
+                socketio.emit("end-game", rooms[room]["points"], room=room)
+                return
 
         current_music = rooms[room]["musics"][current_index]
         track_id = current_music["track_id"]
+        get_valide_access_token()
         current_track = get_track_url(track_id, access_token)
         print(current_track)
         if not current_track:
+            rooms[room]["currentMusicIndex"] += 1
             print(f"Aucune preview disponible pour le track Id {track_id}")
-            return
+            handleNextMusic()
         
         rooms[room]["responseList"] = []
         gameMaster = rooms[room]["musics"][current_index]["player"]
         rooms[room]["gameMaster"] = gameMaster
 
+        rooms[room]["currentMusicIndex"] += 1
         for player in rooms[room]["players"]:
             emit("current_music", {
                 'player': current_music["player"],
@@ -225,7 +232,7 @@ def nextMusic(room, access_token):
 @socketio.on("next_music")
 def handleNextMusic():
     room = session.get("room")
-    access_token = session.get("spotify_access_token")
+    access_token = session.get("access_token")
     if room:
         nextMusic(room, access_token)
 
@@ -271,18 +278,14 @@ def endOfRound(name):
 @socketio.on("add_point")
 def addPoint(name):
     room = session.get("room")
-    access_token = session.get("spotify_access_token")
+    access_token = session.get("access_token")
 
     if room in rooms and name in rooms[room]["players"]:
-        if "points" not in rooms[room]:
-            rooms[room]["points"] = {}
-
         if name not in rooms[room]["points"]:
             rooms[room]["points"][name] = 0
 
         rooms[room]["points"][name] += 1
 
-    rooms[room]["currentMusicIndex"] += 1
     print(f"{room}: {access_token}")
     nextMusic(room, access_token)
 
@@ -312,9 +315,52 @@ def get_track_url(track_id, access_token):
     }
     url = f"https://api.spotify.com/v1/tracks/{track_id}"
     response = requests.get(url, headers=headers)
+    print(f"le token pour la preview_url est: {access_token}")
+    preview_url = response.json().get("preview_url")
+    print(f"la preview_url est: {preview_url}")
     if response.status_code == 200:
         preview_url = response.json().get("preview_url")
         return preview_url
     else:
         print(f"Erreur {response.status_code} lors de la récuperation de la piste {track_id}")
         return None
+        
+def refresh_access_token():
+    refresh_token = session.get('refresh_token')
+
+    if not refresh_token:
+        print("Aucun refresh_token n'est disponible")
+        return None
+    
+    
+    token_url = "https://accounts.spotify.com/api/token"
+    headers = {
+        "Authorization": "Basic " + b64encode(f"{client_id}: {client_secret}".encode()).decode()
+    }
+    data = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token
+    }
+
+    response = requests.post(token_url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        tokens = response.json()
+        access_token = tokens['access_token']
+        expires_in = tokens['expires_in']
+
+        session['access_token'] = access_token
+        session['token_expiration'] = time.time() + expires_in
+
+        print('nouveau access_token récupérer')
+        return access_token
+    else:
+        print(f"Erreur lors du rafraichissement du token: {response.status_code}, {response.json}")
+        return None
+    
+def get_valide_access_token():
+    if time.time() > session.get('token_expiration', 0):
+        print("Token expiré, tentative de rafraichissement...")
+        return refresh_access_token()
+    
+    return session.get('access_token')

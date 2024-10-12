@@ -4,10 +4,11 @@ from flask import (
 import requests
 from flask_login import logout_user, login_required, current_user
 from Project import checkinformation
-from Project.game import check_track, checkRoomCreationForm, room
+from Project.game import check_track, checkRoomCreationForm, room, refresh_access_token
 from Project.models import User, UserInfo
-from Project import app, db
-import os
+from Project import app, db, client_id, client_secret
+from base64 import b64encode
+import os, time
 
 
 @app.route('/')
@@ -70,15 +71,6 @@ def game():
     return room()
 
 
-@app.route('/uploads/<filename>')
-def uploadedFile(filename):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(file_path):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-    else:
-        return jsonify({"error": "file not found"}), 404
-
-
 @app.route('/save-theme', methods=['POST'])
 def save_theme():
     data = request.get_json()
@@ -96,6 +88,7 @@ def save_theme():
 
     return jsonify({'message': 'thème sauvegarder avec succès', 'thème': theme})
 
+
 @app.route('/get-theme', methods=['GET'])
 def get_theme():
     if current_user.is_authenticated:
@@ -108,46 +101,64 @@ def get_theme():
     else:
         return jsonify({'theme': 'day'})
 
-@app.route('/store_token', methods=['POST'])
-def store_token():
-    data = request.json
-
-    access_token = data.get('token')
-    print(f"token : {access_token}")
-    if access_token:
-        session['spotify_access_token'] = access_token
-        return jsonify({'message': 'token stored successfully'}), 200
-    else:
-        return jsonify({'error': 'no token provided'}), 400
 
 @app.route('/spotify_callback')
 def spotify_callback():
-    print('test')
-    access_token = request.args.get('access_token')
-    print(f"token : {access_token}")
-    print(f"token: {session.get('spotify_access_token')} check information")
-    if access_token:
-        session['spotify_access_token'] = access_token
-        
-        #return redirect(url_for('verify_token'))
-        return redirect(url_for('game'))
+    redirect_uri = "http://127.0.0.1:5000/spotify_callback"
+    code = request.args.get('code')
+    token_url = "https://accounts.spotify.com/api/token"
+    headers = {
+        "Authorization": "Basic " + b64encode(f"{client_id}:{client_secret}".encode()).decode()
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": redirect_uri
+    }
+    response = requests.post(token_url, headers=headers, data=data)
+    if response.status_code == 200:
+        tokens = response.json()
+        access_token = tokens['access_token']
+        refresh_token = tokens['refresh_token']
+        expires_in = tokens['expires_in']
 
-    elif session.get('spotify_access_token'):
-        #return redirect(url_for('verify_token'))
+        session['access_token'] = access_token
+        session['refresh_token'] = refresh_token
+        session['token_expiration'] = time.time() + expires_in
+        print("L'access_token et le refresh_token sont bien sauvegarder")
         return redirect(url_for('game'))
 
     else:
-        flash("Erreur de connexion à Spotify", "error")
+        print(f"Erreur: {response.status_code}, {response.json()}")
         return redirect(url_for('home'))
 
+    
+@app.route('/search_music', methods=['GET'])
+def search_music():
+    query = request.args.get('query')
+    access_token = session.get('access_token')
 
-@app.route('/get_token', methods=['GET'])
-def get_token():
-    access_token = session.get('spotify_access_token')
-    if access_token:
-        return jsonify({'token': access_token}), 200
+    if not access_token:
+        refresh_access_token()
+        return None
+    
+    search_url = f"https://api.spotify.com/v1/search?q=${query}&type=track"
+    headers = {
+            'Authorization': f"Bearer {access_token}",
+            'Content-Type': 'application/json'
+        }
+    
+    response = requests.get(search_url, headers=headers)
+
+    if response.status_code == 200:
+        return jsonify(response.json())
     else:
-        return jsonify({'error': "token not found"}), 404
+        return jsonify({'erreur': f"Il y a  une erreur avec l'api de spotify {response.status_code}, {response.json()}"})
+
+
+@app.route('/select_track', methods=["POST"])
+def select_track():
+    return check_track()
 
 
 # permet de verifier les information de l'utilisateur
@@ -158,15 +169,8 @@ def verify_token():
         'Authorization': f'Bearer {access_token}'
     }
     response = requests.get('https://api.spotify.com/v1/me', headers=headers)
-    print(f'response: {response}')
-
     if response.status_code == 200:
         user_info = response.json()
         return jsonify({'user_info': user_info, 'scopes': session.get('spotify_access_token')}), 200
     else:
         return jsonify({'error': 'Invalid token or expired token', 'details': response.json()}), response.status_code
-    
-
-@app.route('/select_track', methods=["POST"])
-def select_track():
-    return check_track()

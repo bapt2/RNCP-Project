@@ -57,10 +57,12 @@ if (toggleSwitch != null) {
     
         if (toggleSwitch.checked){
             document.body.classList.add('night-mode')
-            statusLabel.textContent = 'Nuit'        
+            statusLabel.textContent = 'Nuit'
+            localStorage.setItem('mode', 'nuit')
         } else{
             document.body.classList.remove('night-mode')
             statusLabel.textContent = 'Jour'
+            localStorage.setItem('mode', 'jour')
         }
     
         debounceSaveTheme(theme)

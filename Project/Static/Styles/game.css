@@ -33,15 +33,56 @@ body.night-mode .winner{
     background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
 }
 
-#upload-form{
+#search-form{
     margin: 20px;
 }
 
+#results{
+    display: flex;
+    flex-direction: column ;
+}
+
+#search-button, #game-button{
+    padding: 5px 10px;
+    border-radius: 10px;
+    background: linear-gradient(234deg, rgba(1, 106, 146, 1) 0%, rgba(0, 212, 255, 1) 100%);
+}
+
+#game-button {
+    height: 100px;
+}
+
+#track-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 15%;
+}
+
+#music-name{
+    margin: 0px 10px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
 @media screen and (max-width: 996px) {
     .waiting-panel{
         padding: 20px 150px;
     }
 
+    #results{
+        display: flex;
+        flex-direction: column ;
+        padding: 20px 0px;
+    }
+    
+    #track-image,
+    #game-button {
+        width: 85px;
+        height: 85px;
+        font-size: 0.75em;
+        text-align: left;
+    }
+    
     .dropup-navbar button{
         position: absolute;
         right: 47%;

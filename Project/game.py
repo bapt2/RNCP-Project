@@ -82,7 +82,6 @@ def checkRoomCreationForm():
     session["room"] = room
     session["name"] = current_user.username
 
-    print(f"token: {session.get('access_token')} check information")
     if not session.get('access_token'):
         return redirect(f"https://accounts.spotify.com/authorize?client_id={client_id}&response_type=code&redirect_uri=http://127.0.0.1:5000/spotify_callback&scope=user-modify-playback-state%20user-read-playback-state%20user-library-read")
 

@@ -111,6 +111,7 @@ socket.on("evaluation_response", data => {
         const pointBtn = document.createElement("button")
         pointBtn.innerHTML = 'ajoute 1 point'
         pointBtn.style.display = 'none'
+        pointBtn.id = 'game-button'
         li.appendChild(pointBtn)
         pointBtn.addEventListener("click", () => {
             socket.emit("add_point", responsedata.name)
@@ -121,9 +122,10 @@ socket.on("evaluation_response", data => {
     responsesBtn.forEach(button => {
         button.style.display = 'inline-block'
     })
-    
+
     const skipBtn = document.createElement("button")
     skipBtn.innerHTML = 'Aucune bonne réponse'
+    skipBtn.id = 'game-button'
     gameMaster = document.getElementById("skip-button")
     gameMaster.appendChild(skipBtn)
     skipBtn.style.display = 'block'
@@ -161,11 +163,11 @@ socket.on("end-game", data => {
     gamePanel.style.display = 'none'
     winnerPanel.style.display = 'flex'
 
-    if (data && Object.keys(data).length > 0){
+    if (data && Object.keys(data).length > 0) {
         const [winner, winerPoints] = Object.entries(data)[0]
         h2 = document.getElementById("winner-text")
         h2.innerHTML = `Le gagnant est: ${winner} avec ${winerPoints} points`
-    
+
         const ranking = document.getElementById("ranking")
         ranking.innerHTML = ""
         for (const [player, point] of Object.entries(data)) {
@@ -176,6 +178,7 @@ socket.on("end-game", data => {
 
         const home = document.createElement("button")
         home.innerHTML = "Retour à la page d'accueil"
+        home.id = 'game-button'
         gameMaster = document.getElementById("end-button")
         gameMaster.appendChild(home)
         home.style.display = 'block'
@@ -184,12 +187,13 @@ socket.on("end-game", data => {
         })
 
     }
-    else{
+    else {
         h2 = document.getElementById("winner-text")
         h2.innerHTML = "Personne n'a obtenu de point, il n'y a donc aucun vainqueur"
 
         const home = document.createElement("button")
         home.innerHTML = "Retour à la page d'accueil"
+        home.id = 'game-button'
         gameMaster = document.getElementById("end-button")
         gameMaster.appendChild(home)
         home.style.display = 'block'
@@ -232,14 +236,18 @@ document.getElementById("search-button").addEventListener("click", (e) => {
 
 function displayResults(tracks) {
     const resultsDiv = document.getElementById('results')
+    resultsDiv.style.border = localStorage.getItem('mode') === 'jour' ? '#000000 solid 2px': '#b9b9b9 solid 2px'
+    resultsDiv.style.borderRadius = '30px'
     resultsDiv.innerHTML = ''
-
     tracks.forEach(track => {
+        const albumImageUrl = track.album.images.length > 0 ? track.album.images[0].url : ''
         const trackElement = document.createElement('div')
         trackElement.innerHTML = `
-                                    <p>${track.name} - ${track.artists.map(artist => artist.name).join(", ")}</p>
-                                    <button data-track-id="${track.id}" class="select-track-button">Sélectionnez </button>
+                                    <image src="${albumImageUrl}" alt="${track.name} cover" id="track-image">
+                                    <p id="music-name">${track.name} - ${track.artists.map(artist => artist.name).join(", ")}</p>
+                                    <button id='game-button' data-track-id="${track.id}" class="select-track-button">Sélectionnez </button>
                                 `
+        trackElement.style.margin = '20px 0px'
         resultsDiv.appendChild(trackElement)
 
     })

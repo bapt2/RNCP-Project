@@ -304,3 +304,13 @@ label {
         margin-left: 40px;
     }
 }
+
+@media screen and (max-height: 750px) {
+
+    .dropup-navbar button {
+        position: absolute;
+        right: 47%;
+        top: 10%;
+        display: flex;
+    }
+}

@@ -72,7 +72,7 @@ body.night-mode .winner{
     #results{
         display: flex;
         flex-direction: column ;
-        padding: 20px 0px;
+        padding: 0px;
     }
     
     #track-image,
@@ -93,5 +93,19 @@ body.night-mode .winner{
     .mobile-link{
         position: absolute;
         right: 42%;
+    }
+
+    #music-id{
+        padding: 2px;
+    }
+}
+
+@media screen and (max-height: 750px) {
+
+    .dropup-navbar button {
+        position: absolute;
+        right: 47%;
+        top: 13%;
+        display: flex;
     }
 }

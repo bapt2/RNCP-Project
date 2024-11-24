@@ -250,6 +250,7 @@ function displayResults(tracks) {
     tracks.forEach(track => {
         const albumImageUrl = track.album.images.length > 0 ? track.album.images[0].url : ''
         const trackElement = document.createElement('div')
+        trackElement.id = 'music-id'
         trackElement.innerHTML = `
                                     <image src="${albumImageUrl}" alt="${track.name} cover" id="track-image">
                                     <p id="music-name">${track.name} - ${track.artists.map(artist => artist.name).join(", ")}</p>

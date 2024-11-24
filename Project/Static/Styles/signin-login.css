@@ -17,3 +17,17 @@
         right: 42%;
     }
 }
+
+@media screen and (max-height: 750px) {
+
+    .dropup-navbar button {
+        position: absolute;
+        right: 47%;
+        top: 13%;
+        display: flex;
+    }
+
+    .popup{
+        top: 50%;
+    }
+}

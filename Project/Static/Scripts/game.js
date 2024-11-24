@@ -116,6 +116,7 @@ socket.on("evaluation_response", data => {
         pointBtn.addEventListener("click", () => {
             socket.emit("add_point", responsedata.name)
             responseList.innerHTML = ""
+            gameMaster.removeChild(skipBtn)
         })
     })
     const responsesBtn = responseList.querySelectorAll("button")
@@ -131,6 +132,8 @@ socket.on("evaluation_response", data => {
     skipBtn.style.display = 'block'
     skipBtn.addEventListener("click", () => {
         socket.emit("next_music")
+        gameMaster.removeChild(skipBtn)
+
     })
 })
 
@@ -164,13 +167,18 @@ socket.on("end-game", data => {
     winnerPanel.style.display = 'flex'
 
     if (data && Object.keys(data).length > 0) {
-        const [winner, winerPoints] = Object.entries(data)[0]
+        console.log(Object.entries(data))
+        
+        const results = Object.entries(data)
+        const sortResults = results.sort(([, pointsA], [, pointsB]) => pointsB - pointsA)
+        const [winner, winerPoints] = sortResults[0]
         h2 = document.getElementById("winner-text")
         h2.innerHTML = `Le gagnant est: ${winner} avec ${winerPoints} points`
-
+        
         const ranking = document.getElementById("ranking")
         ranking.innerHTML = ""
-        for (const [player, point] of Object.entries(data)) {
+        
+        for (const [player, point] of sortResults) {
             const li = document.createElement("li")
             li.innerHTML = `${player}: ${point} points`
             ranking.appendChild(li)
@@ -256,6 +264,7 @@ function displayResults(tracks) {
     selecttrackbuttons.forEach(button => {
         button.addEventListener("click", (e) => {
             e.preventDefault()
+            resultsDiv.style.border = ''
             trackId = e.target.getAttribute('data-track-id')
             selectTrack(trackId)
         })

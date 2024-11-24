@@ -187,13 +187,15 @@ from Project import app
 def nextMusic(room, access_token):
     if room in rooms:
         current_index = rooms[room]["currentMusicIndex"]
+        print("test de passage: 1")
         if current_index >= len(rooms[room]["musics"]):
             print(len(rooms[room]["musics"]))
             if rooms[room]["points"] is not None:
+                print("test de passage: finale")
                 sortedPoints = dict(sorted(rooms[room]["points"].items(),
                                         key=lambda item: item[1], reverse=True))
                 rooms[room]["points"] = sortedPoints
-
+                print(sortedPoints)
                 for player in sortedPoints:
                     username = User.query.filter_by(username=player).first()
                     username.userinfo.number_game_win += 1
@@ -203,23 +205,31 @@ def nextMusic(room, access_token):
                 return
             elif rooms[room]["points"] is None:
                 socketio.emit("end-game", rooms[room]["points"], room=room)
-                return
-
+            return
+        print("test de passage: 2")
         current_music = rooms[room]["musics"][current_index]
         track_id = current_music["track_id"]
         get_valide_access_token()
+        print("test de passage: get_valide_access_token")
+
+        print(f"{current_index} = {get_track_url(track_id, access_token)} : on {len(rooms[room]['musics'])}")
         current_track = get_track_url(track_id, access_token)
         print(current_track)
         if not current_track:
-            rooms[room]["currentMusicIndex"] += 1
+            current_index += 1
+            rooms[room]['currentMusicIndex'] = current_index
             print(f"Aucune preview disponible pour le track Id {track_id}")
             handleNextMusic()
+            return
         
         rooms[room]["responseList"] = []
-        gameMaster = rooms[room]["musics"][current_index]["player"]
+        gameMaster = current_music["player"]
         rooms[room]["gameMaster"] = gameMaster
 
-        rooms[room]["currentMusicIndex"] += 1
+        print(f"Avant incrémentation : Index actuel {rooms[room]['currentMusicIndex']}")
+        current_index += 1
+        rooms[room]['currentMusicIndex'] = current_index
+        print(f"Après incrémentation : Index actuel {rooms[room]['currentMusicIndex']}")
         for player in rooms[room]["players"]:
             emit("current_music", {
                 'player': current_music["player"],
@@ -240,7 +250,6 @@ def handleNextMusic():
 def playerResponse(data):
     room = session.get("room")
 
-    print(data["name"], rooms[room]["gameMaster"])
     if data["name"] != rooms[room]["gameMaster"]:
         rooms[room]["responseList"].append({
                     "name": data["name"],
@@ -259,7 +268,6 @@ def playerResponse(data):
 @socketio.on("end_of_round")
 def endOfRound(name):
     room = session.get("room")
-    print(name)
     if name != rooms[room]["gameMaster"]:
         rooms[room]["responseList"].append({
                     "name": name,
@@ -285,7 +293,6 @@ def addPoint(name):
 
         rooms[room]["points"][name] += 1
 
-    print(f"{room}: {access_token}")
     nextMusic(room, access_token)
 
 # --------------------------------------- initial sytem end --------------------------------
@@ -300,10 +307,8 @@ def check_track():
     if track_id and room in rooms:
         if len(rooms[room]["musics"]) < rooms[room]["maxMusicNumber"]:
             rooms[room]['musics'].append({'track_id': track_id, 'player': username})
-            print(f'{track_id} ajouter par {username}')
             return jsonify({'success': True}), 200
         else:
-            print("test")
             return jsonify({'message': 'Nombre de musiques maximum atteintes'}), 200
     else:
         return jsonify({'error': 'missing trackId or room'}), 400
@@ -314,9 +319,7 @@ def get_track_url(track_id, access_token):
     }
     url = f"https://api.spotify.com/v1/tracks/{track_id}"
     response = requests.get(url, headers=headers)
-    print(f"le token pour la preview_url est: {access_token}")
     preview_url = response.json().get("preview_url")
-    print(f"la preview_url est: {preview_url}")
     if response.status_code == 200:
         preview_url = response.json().get("preview_url")
         return preview_url
